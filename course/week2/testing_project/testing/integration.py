@@ -64,7 +64,19 @@ class MNISTIntegrationTest(BaseTest):
     # Notes:
     # --
     # Nothing to return here
-    pass  # remove me
+    """
+    REFERENCE: Trainer class test params:
+        def test(
+          self,
+          model: Optional["pl.LightningModule"] = None,
+          dataloaders: Optional[Union[EVAL_DATALOADERS, LightningDataModule]] = None,
+          ckpt_path: Optional[str] = None,
+          verbose: bool = True,
+          datamodule: Optional[LightningDataModule] = None,
+        )
+    """
+    loader = self.get_dataloader()
+    trainer.test(model=system, dataloaders=loader)
     # ================================
 
 
