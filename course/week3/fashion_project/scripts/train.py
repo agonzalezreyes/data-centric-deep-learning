@@ -56,7 +56,6 @@ class TrainFlow(FlowSpec):
         # data point maintains the same label.
         transforms.RandomRotation(degrees=15),
         transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomResizedCrop(size=(224, 224), scale=(0.8, 1.0)),
         # ================================
         transforms.ToTensor(),
       ])

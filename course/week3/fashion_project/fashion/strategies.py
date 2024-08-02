@@ -65,9 +65,8 @@ def margin_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
   # ================================
   top_probs, top_indices = torch.topk(pred_probs, k=2, dim=1)
   top_diff = top_probs[:, 0] - top_probs[:, 1]
-  indices_sort = torch.argsort(top_diff, descending=False)
-  indices = top_indices[indices_sort]
-  indices = indices[:budget].tolist()
+  indices_sort = torch.argsort(top_diff)
+  indices = indices_sort[:budget].tolist()
 
   return indices
 
@@ -87,4 +86,12 @@ def entropy_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]
   # Take the first 1000.
   # HINT: Add epsilon when taking a log for entropy computation
   # ================================
+
+  # -Σ(p * log(p))
+  entropy = -torch.sum(pred_probs * torch.log(pred_probs + epsilon), dim=1)
+  # Sort the indices by the entropy of the predicted probabilities from high to low.
+  indices = torch.argsort(entropy, descending=True)
+  # Take the first 1000.
+  indices = indices[:budget].tolist()
+  
   return indices
