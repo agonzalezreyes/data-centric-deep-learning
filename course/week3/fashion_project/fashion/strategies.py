@@ -21,6 +21,10 @@ def random_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
   # HINT: when you randomly sample, do not choose duplicates.
   # HINT: please ensure indices is a list of integers
   # ================================
+  indices_array = np.arange(len(pred_probs))
+  indices = np.random.choice(indices_array, budget, replace=False)
+  indices = indices.tolist()
+  
   return indices
 
 def uncertainty_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
@@ -39,6 +43,12 @@ def uncertainty_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[
   # Take the first 1000.
   # HINT: please ensure indices is a list of integers
   # ================================
+  max_class_probs, _ = torch.max(pred_probs, dim=1) # get the max accross class dim
+  uncertainties = torch.where(max_class_probs < chance_prob, torch.ones_like(max_class_probs), (chance_prob / max_class_probs))
+  sorted_indices = torch.argsort(uncertainties, descending=True)
+  indices = sorted_indices[:budget]
+  indices = indices.tolist()
+
   return indices
 
 def margin_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
@@ -53,6 +63,12 @@ def margin_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
   # Sort indices by the different in predicted probabilities in the top two classes per example.
   # Take the first 1000.
   # ================================
+  top_probs, top_indices = torch.topk(pred_probs, k=2, dim=1)
+  top_diff = top_probs[:, 0] - top_probs[:, 1]
+  indices_sort = torch.argsort(top_diff, descending=False)
+  indices = top_indices[indices_sort]
+  indices = indices[:budget].tolist()
+
   return indices
 
 def entropy_sampling(pred_probs: torch.Tensor, budget : int = 1000) -> List[int]:
