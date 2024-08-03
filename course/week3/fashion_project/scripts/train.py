@@ -54,7 +54,8 @@ class TrainFlow(FlowSpec):
         # Any augmentations to apply to the training dataset with the goal of 
         # enlarging the effective dataset size via "self supervision": an augmented
         # data point maintains the same label.
-        # TODO
+        transforms.RandomRotation(degrees=15),
+        transforms.RandomHorizontalFlip(p=0.5),
         # ================================
         transforms.ToTensor(),
       ])
